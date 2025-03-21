@@ -14,6 +14,7 @@ class RolesTablesSeeder extends Seeder
     public function run()
     {
         $super_adminRole = new Role;
+        $super_adminRole->id = 1;
         $super_adminRole->display_name = 'Owner';
         $super_adminRole->external_id = Uuid::uuid4();
         $super_adminRole->name = 'owner';
@@ -21,6 +22,7 @@ class RolesTablesSeeder extends Seeder
         $super_adminRole->save();
 
         $adminRole = new Role;
+        $adminRole->id = 2;
         $adminRole->display_name = 'Administrator';
         $adminRole->external_id = Uuid::uuid4();
         $adminRole->name = 'administrator';
@@ -28,6 +30,7 @@ class RolesTablesSeeder extends Seeder
         $adminRole->save();
 
         $editorRole = new Role;
+        $editorRole->id = 3;
         $editorRole->display_name = 'Manager';
         $editorRole->external_id = Uuid::uuid4();
         $editorRole->name = 'manager';
@@ -35,6 +38,7 @@ class RolesTablesSeeder extends Seeder
         $editorRole->save();
 
         $employeeRole = new Role;
+        $employeeRole->id = 4;
         $employeeRole->display_name = 'Employee';
         $employeeRole->external_id = Uuid::uuid4();
         $employeeRole->name = 'employee';
