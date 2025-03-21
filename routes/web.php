@@ -20,6 +20,19 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('dashboard', 'PagesController@dashboard')->name('dashboard');
 
     /**
+     * Data
+     */
+
+    Route::get('/data/reset-data', 'DataController@resetDataView')->name('data.view');
+    Route::post('/data/reset-data', 'DataController@resetData')->name('data.process');
+
+    Route::get('/csv/import', 'CsvImportController@index')->name('csv.view');
+    Route::post('/csv/import', 'CsvImportController@importUsers')->name('csv.process');
+    Route::post('/csv/import/users', 'CsvImportController@importUsers')->name('csv.users.import');
+    Route::post('/csv/import/products', 'ProductImportController@importUsers')->name('csv.products.import');
+    Route::post('/csv/import/clients', 'ClientImportController@-importUsers')->name('csv.clients.import');
+
+    /**
      * Users
      */
     Route::group(['prefix' => 'users'], function () {
