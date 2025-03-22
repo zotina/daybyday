@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Facades\Log;
 
 class CsvImportController extends Controller
 {
@@ -42,6 +43,11 @@ class CsvImportController extends Controller
             
             $count = 0;
             foreach ($userDtos as $userDto) {
+                if (is_string($userDto->number)) {
+                    $processedNumber = array_map('trim', explode(',', $userDto->number));
+                    Log::info('Tableau après traitement:', $processedNumber);
+                }
+            
                 User::updateOrCreate(
                     ['email' => $userDto->email],
                     [
@@ -49,8 +55,8 @@ class CsvImportController extends Controller
                         'name' => $userDto->name,
                         'password' => Hash::make($userDto->password),
                         'address' => $userDto->address ?? '',
-                        'primary_number' => $userDto->primary_number,
-                        'secondary_number' => $userDto->secondary_number ?? null,
+                        'primary_number' => $processedNumber[0],
+                        'secondary_number' => $processedNumber[1] ?? null,
                         'image_path' => $userDto->image_path ?? '',
                         'remember_token' => $userDto->remember_token ?? null,
                         'created_at' => $userDto->created_at ?? now(),
