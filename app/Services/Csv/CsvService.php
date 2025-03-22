@@ -43,6 +43,7 @@ class CsvService
                     $reflectionProperty->setAccessible(true);
                     
                     $parsedValue = $this->parseValue($reflectionProperty, $value);
+                    Log::info('Value  :', ['Value' => $parsedValue]);
                     $reflectionProperty->setValue($instance, $parsedValue);
                 }
             }
@@ -63,6 +64,9 @@ class CsvService
         
         
         $type = $this->getPropertyType($property);
+        Log::info('Valeur DU TYPE :', ['TYPE' => $type]);
+       
+
         
         try {
             switch ($type) {
@@ -78,7 +82,7 @@ class CsvService
                 case 'boolean':
                     return filter_var($value, FILTER_VALIDATE_BOOLEAN);
                     
-                case 'array':
+                case 'array':   
                     return array_map('trim', explode(',', $value));
                     
                 case 'datetime':
