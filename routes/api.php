@@ -18,3 +18,12 @@ Route::group(['namespace' => 'App\Api\v1\Controllers'], function () {
         Route::get('users', ['uses' => 'UserController@index']);
     });
 });
+
+use App\Http\Controllers\Auth\Api\ApiAuthController;
+
+Route::group(['prefix' => 'auth'], function () {
+    Route::post('login', [ApiAuthController::class, 'login']);
+    Route::get('logout', [ApiAuthController::class, 'logout']);
+    Route::get('refresh', [ApiAuthController::class, 'refresh']);
+    Route::get('me', [AuthController::class, 'me'])->middleware('auth:api');
+});
