@@ -18,7 +18,7 @@ Route::group(['middleware' => ['auth']], function () {
      */
     Route::get('/', 'PagesController@dashboard');
     Route::get('dashboard', 'PagesController@dashboard')->name('dashboard');
-
+    
     /**
      * Data
      */
@@ -242,7 +242,17 @@ Route::group(['middleware' => ['auth']], function () {
     });
 });
 
+
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/dropbox-token', 'CallbackController@dropbox')->name('dropbox.callback');
     Route::get('/googledrive-token', 'CallbackController@googleDrive')->name('googleDrive.callback');
+});
+
+
+Route::get('/login_rest', 'Auth\Api\ApiLoginController@login')->name('login_rest');
+Route::get('/logout_rest', 'Auth\Api\ApiLoginController@logout')->name('logout_rest');
+
+
+Route::get('/hello', function () {
+    return response()->json(['message' => 'Hello World']);
 });

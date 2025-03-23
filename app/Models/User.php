@@ -13,10 +13,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Cashier\Billable;
 use Carbon\Carbon;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable, EntrustUserTrait,  SoftDeletes, Billable;
+    use Notifiable, EntrustUserTrait, SoftDeletes, Billable;
 
     public function restore()
     {
@@ -192,5 +193,16 @@ class User extends Authenticatable
         }
 
         return collect(['keys' => $keys, 'counts' => $counts]);
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey(); 
+
+    }
+    
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }
