@@ -45,5 +45,12 @@ class Offer extends Model
     {
         $this->status = OfferStatus::lost()->getStatus();
         $this->save();
+
     }
+
+    public static function getWonOffers()
+    {
+        return self::where('status', OfferStatus::won()->getStatus())->get();
+    }
+
 }

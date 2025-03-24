@@ -165,4 +165,5 @@ class Invoice extends Model
         $invoiceCalculator = new InvoiceCalculator($this);
         return $invoiceCalculator->getTotalPrice();
     }
+
 }

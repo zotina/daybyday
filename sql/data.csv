@@ -1,0 +1,2 @@
+id,external_id,name,email,password,address,number,image_path,remember_token,created_at,updated_at
+250,5f4e95bb-3f2e-423d-b8a9-d4bb4732bcd1,Admina,admina@admin.com,$2y$10$KJl1YP4N0.4bSTvfhZ1mrTyUoYgkT0X.LlWKhH6rgVYcn2OqUtJ32,,"1212121,121212",,NULL,2016-06-04 13:42:19,2016-06-04 13:42:19

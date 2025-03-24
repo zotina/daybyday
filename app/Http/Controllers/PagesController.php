@@ -14,10 +14,7 @@ use DB;
 
 class PagesController extends Controller
 {
-    /**
-     * Dashobard view
-     * @return mixed
-     */
+    
     public function dashboard()
     {
         $today = today();
@@ -25,7 +22,7 @@ class PagesController extends Controller
         $period = CarbonPeriod::create($startDate, $today);
         $datasheet = [];
 
-        // Iterate over the period
+        
         foreach ($period as $date) {
             $datasheet[$date->format(carbonDate())] = [];
             $datasheet[$date->format(carbonDate())]["monthly"] = [];
