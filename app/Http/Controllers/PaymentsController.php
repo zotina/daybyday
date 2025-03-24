@@ -58,7 +58,7 @@ class PaymentsController extends Controller
         $invoiceCalculator = new InvoiceCalculator($invoice);
 
         if($request->amount * 100 > $invoiceCalculator->getAmountDue()->getAmount()){
-            session()->flash('flash_message_warning', __('Amount payed is more than invoice total price'));
+            session()->flash('flash_message_warning', __('Amount paid exceeds the invoice total due'));
             return redirect()->back();
         }
 
