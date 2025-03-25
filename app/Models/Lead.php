@@ -11,16 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
-/**
- * @property string title
- * @property string external_id
- * @property integer user_assigned_id
- * @property Status status
- * @property Client client
- * @property integer invoice_id
- * @property integer status_id
- * @property Invoice invoice
- */
+
 class Lead extends Model implements Commentable
 {
     use SearchableTrait, SoftDeletes, DeadlineTrait;
@@ -50,12 +41,12 @@ class Lead extends Model implements Commentable
     {
         parent::boot();
 
-        // This makes it easy to toggle the search feature flag
-        // on and off. This is going to prove useful later on
-        // when deploy the new search engine to a live app.
-        //if (config('services.search.enabled')) {
+        
+        
+        
+        
         static::observe(ElasticSearchObserver::class);
-        //}
+        
     }
 
     public function getRouteKeyName()
@@ -127,9 +118,7 @@ class Lead extends Model implements Commentable
     {
         return $this->morphMany(Invoice::class, 'source');
     }
-    /**
-     * @return array
-     */
+    
     public function getSearchableFields(): array
     {
         return $this->searchableFields;
@@ -165,4 +154,10 @@ class Lead extends Model implements Commentable
         }
         return true;
     }
+    public static function getIdByTitle(string $title): ?int
+    {
+        $lead = self::where('title', $title)->first();
+        return $lead ? $lead->id : null;
+    }
+
 }

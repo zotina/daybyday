@@ -53,4 +53,12 @@ class Offer extends Model
         return self::where('status', OfferStatus::won()->getStatus())->get();
     }
 
+    public static function updateStatusToWon(int $offer)
+    {
+        return self::where('id', $offer)
+            ->update([
+                'status' => 'won'
+            ]);
+    }
+
 }

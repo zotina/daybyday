@@ -25,18 +25,10 @@ class User extends Authenticatable implements JWTSubject
         $this->restoreB();
     }
 
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
+    
     protected $table = 'users';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+    
     protected $fillable = [
         'external_id',
         'name',
@@ -49,11 +41,7 @@ class User extends Authenticatable implements JWTSubject
         'language',
     ];
 
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
+    
     protected $hidden = ['id', 'password', 'password_confirmation', 'remember_token', 'image_path'];
     protected $appends = ['avatar'];
 
@@ -121,14 +109,14 @@ class User extends Authenticatable implements JWTSubject
 
     public function getNameAndDepartmentAttribute()
     {
-        //dd($this->name, $this->department()->toSql(), $this->department()->getBindings());
+        
         return $this->name . ' ' . '(' . $this->department()->first()->name . ')';
     }
 
 
     public function getNameAndDepartmentEagerLoadingAttribute()
     {
-        //dd($this->name, $this->department()->toSql(), $this->department()->getBindings());
+        
         return $this->name . ' ' . '(' . $this->relations['department'][0]->name . ')';
     }
 
@@ -178,10 +166,7 @@ class User extends Authenticatable implements JWTSubject
         return collect(['keys' => $keys, 'counts' => $counts]);
     }
 
-    /**
-     * @param $external_id
-     * @return mixed
-     */
+    
     public function totalOpenAndClosedTasks()
     {
         $groups = $this->tasks()->with('status')->get()->sortBy('status.title')->groupBy('status.title');
@@ -205,4 +190,11 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public static function getId(): ?int
+    {
+        $user = self::first(); 
+        return $user ? $user->id : null;
+    }
+
 }
