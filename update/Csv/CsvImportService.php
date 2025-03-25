@@ -10,10 +10,6 @@ use Ramsey\Uuid\Uuid;
 use App\Models\DataSeeder;
 use App\Models\Project;
 use App\Models\Client;
-use App\Models\User;
-use App\Models\Lead;
-use App\Models\Offer;
-
 class CsvImportService
 {
     protected $csvService;
@@ -23,12 +19,14 @@ class CsvImportService
         $this->csvService = $csvService;
     }
 
+    
     public function importCsvFiles($files, $types, $dtoClasses)
     {
         $results = [];
         $allErrors = [];
         $counts = ['clients' => 0, 'tasks' => 0, 'leads' => 0];
 
+        
         foreach ($types as $index => $type) {
             $file = $files[$type] ?? null;
             if (!$file) {
@@ -42,16 +40,17 @@ class CsvImportService
 
             list($dtos, $errors) = $this->csvService->importCsv($fullPath, $dtoClasses[$index]);
             $results[$type] = $dtos;
-
             if (!empty($errors)) {
                 $allErrors = array_merge($allErrors, $errors->toArray());
             }
         }
 
+        
         if (!empty($allErrors)) {
             return [$counts, $allErrors];
         }
 
+        
         DB::beginTransaction();
         try {
             foreach ($types as $index => $type) {
@@ -74,19 +73,13 @@ class CsvImportService
 
     protected function upsertClient($dto)
     {
-        $user_id = User::getId();
-
-        $client_id = DataSeeder::insertClientForUser($user_id,$dto->client_name);
-        DataSeeder::insertProjectForClient($client_id, $dto->project_title);
+        DataSeeder::insertProjectForClient(DataSeeder::insertClientForUser(DataSeeder::insertUser($dto->client_name)),$dto->project_title);
         
-        
-        DB::statement("CALL insert_random_contacts(?)", [Client::count()]);
     }
 
     protected function upsertTask($dto)
     {
-        $project_id = Project::getProjectIdByTitle($dto->project_title);
-        DataSeeder::insertTaskForProject($project_id, $dto->task_title);
+        DataSeeder::insertTaskForProject(Project::getProjectIdByTitle($dto->project_title),$dto->task_title);
     }
 
     protected function upsertLead($dto)
@@ -94,22 +87,14 @@ class CsvImportService
         Log::info("begin " . $dto->produit);
         $produit_id = DataSeeder::createProduct($dto->produit);
         Log::info("product");
-
-        $client_id = Client::getIdClientByCompanyName($dto->client_name);
-
-        $lead_id = DataSeeder::createLead($dto->lead_title, $client_id);
-        $offer_id = DataSeeder::createOffer($client_id, $lead_id);
-        $lead_id = Lead::getIdByTitle($dto->lead_title);
-        
-        if ($dto->type == "invoice") {
-            Log::info("invoice");
-            Offer::updateStatusToWon($offer_id);
-            DataSeeder::createInvoiceLine(null, $offer_id, $dto->prix, $dto->quantite, $produit_id);
-            $invoice_id = DataSeeder::createInvoice($client_id, $offer_id,$lead_id);
-            DataSeeder::createInvoiceLine($invoice_id, null, $dto->prix, $dto->quantite, $produit_id);
-        } else {
+        $offer_id=DataSeeder::createOffer(Client::getIdClientByUsername(($dto->client_name)),DataSeeder::createLead($dto->lead_title,Client::getIdClientByUsername  (($dto->client_name))));
+        if($dto->type == "offers"){
+            Log::info("offers");
+            DataSeeder::createInvoiceLine(null,$offer_id,$dto->prix,$dto->quantite,$produit_id);
+        }else{
             Log::info("else");
-            DataSeeder::createInvoiceLine(null, $offer_id, $dto->prix, $dto->quantite, $produit_id);
+            DataSeeder::createInvoiceLine(null,$offer_id,$dto->prix,$dto->quantite,$produit_id);
+            DataSeeder::createInvoiceLine(DataSeeder::createInvoice(Client::getIdClientByUsername(($dto->client_name)),$offer_id),null,$dto->prix,$dto->quantite,$produit_id);
         }
     }
-}
+}   

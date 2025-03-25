@@ -109,9 +109,9 @@ class DataSeeder extends Model
         return DB::select('SELECT insert_user(?) AS user_id', [$name])[0]->user_id;
     }
 
-    public static function insertClientForUser($userId,$client_name): int
+    public static function insertClientForUser(int $userId): int
     {
-        $result = DB::select('CALL insert_client_for_user(?,?)', [$userId,$client_name]);
+        $result = DB::select('CALL insert_client_for_user(?)', [$userId]);
         return $result[0]->new_client_id;
     }
 
@@ -145,9 +145,9 @@ class DataSeeder extends Model
         return $result[0]->new_invoice_line_id;
     }
 
-    public static function createInvoice($p_client_id,$p_offer_id,$p_lead_id) : int
+    public static function createInvoice($p_client_id,$p_offer_id) : int
     {
-        $result = DB::select('CALL insert_single_invoice(?,?,?)', [$p_client_id,$p_offer_id,$p_lead_id]);
+        $result = DB::select('CALL insert_single_invoice(?,?)', [$p_client_id,$p_offer_id]);
         return $result[0]->new_invoice_id;
     }
 
