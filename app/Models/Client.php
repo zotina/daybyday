@@ -8,12 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * @property mixed user_id
- * @property mixed company_name
- * @property mixed vat
- * @property mixed id
- */
+
 class Client extends Model
 {
     use  SearchableTrait, SoftDeletes;
@@ -39,12 +34,12 @@ class Client extends Model
     public static function boot()
     {
         parent::boot();
-        // This makes it easy to toggle the search feature flag
-        // on and off. This is going to prove useful later on
-        // when deploy the new search engine to a live app.
-        //if (config('services.search.enabled')) {
+        
+        
+        
+        
         static::observe(ElasticSearchObserver::class);
-        //}
+        
     }
 
     public function updateAssignee(User $user)
@@ -122,11 +117,17 @@ class Client extends Model
         return self::where('external_id', $external_id)->first();
     }
 
-    /**
-     * @return array
-     */
+    
     public function getSearchableFields(): array
     {
         return $this->searchableFields;
     }
+
+    public static function getIdClientByCompanyName($companyName): ?int
+    {
+        $client = self::where('company_name', $companyName)
+            ->first();
+        return $client ? $client->id : null;
+    }
+
 }
